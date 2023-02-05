@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="/src/index.ts" defer></script>
+    <title>Vite + TS</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      let grid = new RoundedSquareGrid(
+        0,
+        0,
+        10,
+        18,
+        0.5,
+        "#ffffff",
+        "#000",
+        3,
+        8
+      );
+      let app = document.getElementById("app");
+      grid.render(app);
+    </script>
+  </body>
+</html>
