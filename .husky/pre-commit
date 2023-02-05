@@ -4,5 +4,6 @@
 npx lint-staged
 npm run build
 npx lint-staged
+./cleanUpUnderscoreFiles.sh
 
 

@@ -93,13 +93,24 @@ class c {
     for (let e = 0; e < this.rows; e++) {
       this.grid[e] = [];
       for (let r = 0; r < this.columns; r++)
-        s++, this.grid[e][r] = this.generateSquarePath(t, i, h), this.grid[e][r].text = s.toString(), t += this.squareWidth, h = this.alternateColor(h);
+        s++, this.grid[e][r] = this.generateSquarePath(
+          t,
+          i,
+          h
+        ), this.grid[e][r].text = s.toString(), t += this.squareWidth, h = this.alternateColor(h);
       t = this.x, i += this.squareHeight;
     }
     return this.generateGroup();
   }
   generateSquarePath(t, i, h) {
-    return new g(t, i, this.squareWidth, this.squareHeight, this.radius, h);
+    return new g(
+      t,
+      i,
+      this.squareWidth,
+      this.squareHeight,
+      this.radius,
+      h
+    );
   }
   hasNeighbor(t, i) {
     let h = !1, s = !1, e = !1, r = !1;
@@ -112,7 +123,17 @@ class c {
         if (i++, i % 2 !== 0)
           continue;
         let e = this.hasNeighbor(h, s);
-        e.bottomLeft && (t += new l(this.grid[h][s], this.grid[h + 1][s - 1], this.radius, this.color2).toSvgPathBottomLeft()), e.bottomRight && (t += new l(this.grid[h][s], this.grid[h + 1][s + 1], this.radius, this.color2).toSvgPathBottomRight());
+        e.bottomLeft && (t += new l(
+          this.grid[h][s],
+          this.grid[h + 1][s - 1],
+          this.radius,
+          this.color2
+        ).toSvgPathBottomLeft()), e.bottomRight && (t += new l(
+          this.grid[h][s],
+          this.grid[h + 1][s + 1],
+          this.radius,
+          this.color2
+        ).toSvgPathBottomRight());
       }
     return {
       connectors: t,
@@ -145,7 +166,10 @@ class c {
     if (!t)
       return;
     const i = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    i.setAttribute("xmlns", "http://www.w3.org/2000/svg"), i.setAttribute("width", "100%"), i.setAttribute("height", "100%"), i.setAttribute("viewBox", `0 0 ${this.x + this.squareWidth * this.columns} ${this.y + this.squareHeight * this.rows}`), i.innerHTML = this.toSvgPath(), t.appendChild(i);
+    i.setAttribute("xmlns", "http://www.w3.org/2000/svg"), i.setAttribute("width", "100%"), i.setAttribute("height", "100%"), i.setAttribute(
+      "viewBox",
+      `0 0 ${this.x + this.squareWidth * this.columns} ${this.y + this.squareHeight * this.rows}`
+    ), i.innerHTML = this.toSvgPath(), t.appendChild(i);
   }
 }
 export {
