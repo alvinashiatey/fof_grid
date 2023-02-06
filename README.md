@@ -18,7 +18,7 @@ This is a script to create a grid for the design system of FOF design by Mainwei
 ```js
 import { RoundedSquareGrid } from "https://cdn.jsdelivr.net/gh/alvinashiatey/fof_grid@latest/dist/fof_grid.iife.min.js";
 // Instantiate the grid
-let grid = new RoundedSquareGrid({
+let options = {
   width: 14,
   height: 20,
   cols: 3,
@@ -27,7 +27,8 @@ let grid = new RoundedSquareGrid({
   secondaryClr: "wheat",
   // The container accepts a CSS selector
   container: ".app",
-});
+};
+let grid = new RoundedSquareGrid(options);
 grid.render();
 ```
 
