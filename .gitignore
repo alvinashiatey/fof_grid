@@ -22,4 +22,4 @@ dist-ssr
 *.sln
 *.sw?
 ._*
-cleanUpUnderscoreFiles.sh
+shellScript
