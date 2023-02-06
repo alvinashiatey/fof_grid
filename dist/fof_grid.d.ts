@@ -9,9 +9,29 @@ export declare class RoundedSquareGrid {
 	private readonly radius;
 	private readonly color1;
 	private readonly color2;
-	private readonly columns;
-	private readonly rows;
-	constructor(x: number, y: number, squareWidth: number, squareHeight: number, radius: number, color1: string, color2: string, columns: number, rows: number);
+	private columns;
+	private rows;
+	private readonly containerSelector;
+	private containerContent;
+	private isSingleContainer;
+	private container;
+	constructor({ x, y, width, height, radius, primaryClr, secondaryClr, cols, rows, container, }: {
+		x?: number;
+		y?: number;
+		width: number;
+		height: number;
+		radius?: number;
+		primaryClr?: string;
+		secondaryClr?: string;
+		cols?: number;
+		rows?: number;
+		container?: string;
+	});
+	private init;
+	private makeOdd;
+	private setupRowsAndColumns;
+	private setupContainerContent;
+	private getContainerContent;
 	private toSvgPath;
 	private generateSquarePath;
 	private hasNeighbor;
@@ -21,7 +41,8 @@ export declare class RoundedSquareGrid {
 	};
 	generateGroup(): string;
 	private alternateColor;
-	render(container?: HTMLElement | null): void;
+	private appendToContainer;
+	render(): void;
 }
 
 export {};
