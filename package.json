@@ -30,11 +30,6 @@
     "prepare": "husky install && husky add .husky/pre-commit 'npx lint-staged' && git add .husky/pre-commit",
     "version": "npm version patch && git tag v$(node -e 'console.log(require(\"./package.json\").version)')"
   },
-  "husky": {
-    "hooks": {
-      "pre-push": "npm run version"
-    }
-  },
   "devDependencies": {
     "@types/node": "^18.11.18",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
