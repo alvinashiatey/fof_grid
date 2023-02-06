@@ -3,7 +3,7 @@ function generateComplement(color: string): string {
   if (color.startsWith("#")) {
     hex = color.slice(1);
   } else {
-    let temp = document.createElement("div");
+    const temp = document.createElement("div");
     temp.style.color = color;
     hex = window.getComputedStyle(temp).color;
     hex = hex
@@ -29,9 +29,10 @@ class RoundedSquare {
   readonly fillColor: string;
 
   public corners: Connect[] = [];
-  public fontSize: number;
+  public fontSize: string;
   public fontColor: string;
   public text: string;
+  public href: string;
 
   constructor(
     x: number,
@@ -47,13 +48,20 @@ class RoundedSquare {
     this.height = height;
     this.radius = radius;
     this.fillColor = fillColor;
-    this.fontSize = 0.15;
+    this.fontSize = "0.15rem";
     this.fontColor = generateComplement(fillColor);
     this.text = "hello";
+    this.href = "";
   }
 
   public toSvgPath(): string {
     return this.groupSvg();
+  }
+
+  private anchorSvg(): string {
+    return `<a href="${
+      this.href
+    }">${this.rectSvg()}${this.textSvg()}${this.connectSvg()}</a>`;
   }
 
   private rectSvg(): string {
@@ -65,20 +73,23 @@ class RoundedSquare {
       this.y + this.height / 2
     }" fill="${
       this.fontColor
-    }" text-anchor="middle" alignment-baseline="middle" style="font:italic ${
+    }" text-anchor="middle" alignment-baseline="middle" style="font-style:italic; font-size:${
       this.fontSize
-    }rem sans-serif; ">${this.text}</text>`;
+    }; font-family:sans-serif;">${this.text}</text>`;
   }
 
   private connectSvg(): string {
     let path = "";
-    for (let conn of this.corners) {
+    for (const conn of this.corners) {
       path += conn.path;
     }
     return path;
   }
 
   private groupSvg(): string {
+    if (this.href !== "") {
+      return `<g>${this.anchorSvg()}</g>`;
+    }
     return `<g>${this.rectSvg()}${this.textSvg()}${this.connectSvg()}</g>`;
   }
 }
@@ -91,8 +102,8 @@ class Connect {
   private readonly radius: number;
   private readonly bx: number;
   private readonly by: number;
-  public fillColor: string = "#181818";
-  public path: string = "";
+  public fillColor = "#181818";
+  public path = "";
 
   constructor(
     square1: RoundedSquare,
@@ -142,53 +153,139 @@ export class RoundedSquareGrid {
   private readonly radius: number;
   private readonly color1: string;
   private readonly color2: string;
-  private readonly columns: number;
-  private readonly rows: number;
+  private columns: number;
+  private rows: number;
+  private readonly containerSelector: string;
+  private containerContent: { href: string; text: string }[] = [];
 
-  constructor(
-    x: number,
-    y: number,
-    squareWidth: number,
-    squareHeight: number,
-    radius: number,
-    color1: string,
-    color2: string,
-    columns: number,
-    rows: number
-  ) {
-    this.x = x;
-    this.y = y;
-    this.squareWidth = squareWidth;
-    this.squareHeight = squareHeight;
-    this.radius = radius;
-    this.color1 = color1;
-    this.color2 = color2;
-    this.columns = columns;
-    this.rows = rows;
+  private isSingleContainer = true;
+  private container: HTMLElement | NodeListOf<HTMLElement> | null;
+
+  constructor({
+    x,
+    y,
+    width,
+    height,
+    radius,
+    primaryClr,
+    secondaryClr,
+    cols,
+    rows,
+    container,
+  }: {
+    x?: number;
+    y?: number;
+    width: number;
+    height: number;
+    radius?: number;
+    primaryClr?: string;
+    secondaryClr?: string;
+    cols?: number;
+    rows?: number;
+    container?: string;
+  }) {
+    this.x = x || 0;
+    this.y = y || 0;
+    this.squareWidth = width;
+    this.squareHeight = height;
+    this.radius = radius || 0.5;
+    this.color1 = primaryClr || "#ffffff";
+    this.color2 = secondaryClr || "#000";
+    this.columns = this.makeOdd(cols) || 3;
+    this.rows = rows || 1;
     this.grid = [];
+    this.containerSelector = container || "body";
+    this.container = null;
+    this.init();
   }
 
-  private toSvgPath(): string {
+  private init(): void {
+    if (this.containerSelector === "body") {
+      this.isSingleContainer = true;
+      this.container = document.body;
+      return;
+    }
+
+    this.isSingleContainer = this.containerSelector[0] === "#";
+    const selector = this.isSingleContainer
+      ? this.containerSelector.slice(1)
+      : this.containerSelector;
+
+    const el = this.isSingleContainer
+      ? document.getElementById(selector)
+      : (document.querySelectorAll(selector) as NodeListOf<HTMLElement>);
+
+    if (!el) {
+      return;
+    }
+
+    this.isSingleContainer = (el as NodeListOf<HTMLElement>).length === 1;
+    if (el instanceof NodeList) {
+      this.isSingleContainer = el.length === 1;
+      this.container = this.isSingleContainer ? el[0] : el;
+    } else {
+      this.isSingleContainer = true;
+      this.container = el as HTMLElement;
+    }
+  }
+  private makeOdd(num: number | undefined): number | undefined {
+    if (!num) return undefined;
+    return num % 2 === 0 ? num + 1 : num;
+  }
+  private setupRowsAndColumns(container: HTMLElement) {
+    const children = container.children;
+    const numChildren = children.length;
+    this.rows = Math.ceil((numChildren * 2) / this.columns) || 1;
+    if (this.columns % 2 !== 0) {
+      this.columns = this.makeOdd(this.columns) || 3;
+    }
+    this.setupContainerContent(container);
+  }
+  private setupContainerContent(container: HTMLElement) {
+    this.containerContent = [];
+    for (let i = 0; i < container.children.length; i++) {
+      const child = container.children[i];
+      const href = child.getAttribute("href") || "";
+      const text = child.textContent || "";
+      this.containerContent.push({ href, text });
+    }
+    container.innerHTML = "";
+  }
+  private getContainerContent(index: number): { href: string; text: string } {
+    if (index % 2 !== 0) {
+      return this.containerContent.shift() || { href: "", text: "" };
+    }
+    return { href: "", text: "" };
+  }
+
+  private toSvgPath(container: HTMLElement): string {
     let currentX = this.x;
     let currentY = this.y;
     let currentColor = this.color1;
     let index = 0;
+    this.setupRowsAndColumns(container);
     for (let i = 0; i < this.rows; i++) {
       this.grid[i] = [];
       for (let j = 0; j < this.columns; j++) {
-        index++;
         this.grid[i][j] = this.generateSquarePath(
           currentX,
           currentY,
           currentColor
         );
-        this.grid[i][j].text = index.toString();
+        const { href, text } = this.getContainerContent(index);
+        this.grid[i][j].text = text;
+        this.grid[i][j].href = href;
         currentX += this.squareWidth;
         currentColor = this.alternateColor(currentColor);
+        index++;
+        if (this.containerContent.length === 0 && index % 2 !== 0) {
+          break;
+        }
       }
       currentX = this.x;
       currentY += this.squareHeight;
     }
+    console.log(this.grid);
     return this.generateGroup();
   }
   private generateSquarePath(
@@ -239,8 +336,8 @@ export class RoundedSquareGrid {
       for (let j = 0; j < this.columns; j++) {
         index++;
         if (index % 2 !== 0) continue;
-        let pos = this.hasNeighbor(i, j);
-        if (pos.bottomLeft) {
+        const pos = this.hasNeighbor(i, j);
+        if (pos.bottomLeft && this.grid[i + 1][j - 1]) {
           connectors += new Connect(
             this.grid[i][j],
             this.grid[i + 1][j - 1],
@@ -248,7 +345,7 @@ export class RoundedSquareGrid {
             this.color2
           ).toSvgPathBottomLeft();
         }
-        if (pos.bottomRight) {
+        if (pos.bottomRight && this.grid[i + 1][j + 1]) {
           connectors += new Connect(
             this.grid[i][j],
             this.grid[i + 1][j + 1],
@@ -264,12 +361,13 @@ export class RoundedSquareGrid {
     };
   }
   public generateGroup(): string {
-    let groups: {
+    const groups: {
       [key: string]: RoundedSquare[];
     } = {};
     for (let i = 0; i < this.rows; i++) {
       for (let j = 0; j < this.columns; j++) {
-        let color = this.grid[i][j].fillColor;
+        if (!this.grid[i][j]) continue;
+        const color = this.grid[i][j]?.fillColor;
         if (!groups[color]) {
           groups[color] = [];
         }
@@ -278,10 +376,10 @@ export class RoundedSquareGrid {
     }
     let group = "";
     const reversedKeys = Object.keys(groups).reverse();
-    for (let key of reversedKeys) {
+    for (const key of reversedKeys) {
       group += `<g class="${key}">\n`;
       for (let i = 0; i < groups[key].length; i++) {
-        group += groups[key][i].toSvgPath();
+        group += groups[key][i]?.toSvgPath();
       }
       if (key === this.generateConnectors().color) {
         group += this.generateConnectors().connectors;
@@ -290,24 +388,28 @@ export class RoundedSquareGrid {
     }
     return group;
   }
-
   private alternateColor(currentColor: string): string {
     return currentColor === this.color1 ? this.color2 : this.color1;
   }
-
-  public render(container: HTMLElement | null = document.body): void {
-    if (!container) return;
+  private appendToContainer(el: SVGElement): void {
+    if (this.isSingleContainer) {
+      el.innerHTML = this.toSvgPath(this.container as HTMLElement);
+      el.setAttribute(
+        "viewBox",
+        `0 0 ${this.x + this.squareWidth * this.columns} ${
+          this.y + this.squareHeight * this.rows
+        }`
+      );
+      (this.container as HTMLElement)?.appendChild(el);
+      return;
+    }
+  }
+  public render(): void {
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
     svg.setAttribute("width", "100%");
     svg.setAttribute("height", "100%");
-    svg.setAttribute(
-      "viewBox",
-      `0 0 ${this.x + this.squareWidth * this.columns} ${
-        this.y + this.squareHeight * this.rows
-      }`
-    );
-    svg.innerHTML = this.toSvgPath();
-    container.appendChild(svg);
+
+    this.appendToContainer(svg);
   }
 }
