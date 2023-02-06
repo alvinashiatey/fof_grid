@@ -16,7 +16,7 @@ This is a script to create a grid for the design system of FOF design by Mainwei
 ```
 
 ```js
-import { RoundedSquareGrid } from "https://cdn.jsdelivr.net/gh/alvinashiatey/fof_grid@latest/dist/fof_grid.iife.min.js";
+import { RoundedSquareGrid } from "https://cdn.jsdelivr.net/gh/alvinashiatey/fof_grid@v0.1.2/dist/fof_grid.iife.min.js";
 // Instantiate the grid
 let options = {
   width: 14,
