@@ -61,21 +61,19 @@ class RoundedSquare {
   private anchorSvg(): string {
     return `<a href="${
       this.href
-    }">${this.rectSvg()}${this.textSvg()}${this.connectSvg()}</a>`;
+    }">${this.rectSvg()}${this.foreignObjectSvg()}${this.connectSvg()}</a>`;
   }
 
   private rectSvg(): string {
     return `<rect x="${this.x}" y="${this.y}" width="${this.width}" height="${this.height}" rx="${this.radius}" ry="${this.radius}" fill="${this.fillColor}"/>`;
   }
 
-  private textSvg(): string {
-    return `<text x="${this.x + this.width / 2}" y="${
-      this.y + this.height / 2
-    }" fill="${
-      this.fontColor
-    }" text-anchor="middle" alignment-baseline="middle" style="font-style:italic; font-size:${
-      this.fontSize
-    }; font-family:sans-serif;">${this.text}</text>`;
+  private foreignObjectSvg(): string {
+    return `<foreignObject x="${this.x}" y="${this.y}" width="${this.width}" height="${this.height}">
+        <div style="width:100%; height:100%; display: grid; place-content: center;">
+        <p xmlns="http://www.w3.org/1999/xhtml" style="width:100%; height:100%; margin: 0; color: ${this.fontColor}; text-align: center; align-items: center; font-style:italic; font-size:${this.fontSize}; font-family:sans-serif;">${this.text}</p>
+        </div>
+        </foreignObject>`;
   }
 
   private connectSvg(): string {
@@ -90,7 +88,7 @@ class RoundedSquare {
     if (this.href !== "") {
       return `<g>${this.anchorSvg()}</g>`;
     }
-    return `<g>${this.rectSvg()}${this.textSvg()}${this.connectSvg()}</g>`;
+    return `<g>${this.rectSvg()}${this.connectSvg()}</g>`;
   }
 }
 
