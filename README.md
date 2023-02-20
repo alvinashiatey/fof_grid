@@ -8,10 +8,10 @@ This is a script to create a grid for the design system of FOF design by Mainwei
 
 ```html
 <div class="app">
-    <a href="/a" data-shape>Text Goes Here</a>
-    <a href="/b" data-shape>Text Goes Here</a>
-    <a href="/c" data-shape>Text Goes Here</a>
-    <a href="/d" data-shape>Text Goes Here</a>
+  <a href="/a" data-shape>Text Goes Here</a>
+  <a href="/b" data-shape>Text Goes Here</a>
+  <a href="/c" data-shape>Text Goes Here</a>
+  <a href="/d" data-shape>Text Goes Here</a>
 </div>
 ```
 
@@ -31,4 +31,3 @@ let options = {
 let grid = new RoundedSquareGrid(options);
 grid.render();
 ```
-

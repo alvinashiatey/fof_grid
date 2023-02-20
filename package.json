@@ -6,7 +6,7 @@
     "url": "https://www.alvinashiatey.com"
   },
   "private": true,
-  "version": "0.1.2",
+  "version": "0.1.3",
   "main": "./dist/library.cjs",
   "module": "./dist/library.mjs",
   "unpkg": "./dist/library.umd.js",
