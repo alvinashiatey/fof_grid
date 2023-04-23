@@ -27,6 +27,9 @@ let options = {
   secondaryClr: "wheat",
   // The container accepts a CSS selector
   container: ".app",
+  // width and height of SVG optional
+  svgWidth: "100%",
+  svgHeight: "100%",
 };
 let grid = new RoundedSquareGrid(options);
 grid.render();

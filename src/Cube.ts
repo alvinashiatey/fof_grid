@@ -20,6 +20,16 @@ function generateComplement(color: string): string {
   return complement;
 }
 
+function styles(): string {
+  return `
+  div {
+    width:100%; 
+    height:100%; 
+    display: grid; 
+    place-content: center;
+  }`;
+}
+
 class RoundedSquare {
   readonly x: number;
   readonly y: number;
@@ -70,7 +80,7 @@ class RoundedSquare {
 
   private foreignObjectSvg(): string {
     return `<foreignObject x="${this.x}" y="${this.y}" width="${this.width}" height="${this.height}">
-        <div style="width:100%; height:100%; display: grid; place-content: center;">
+        <div data-content="${this.text}" style="width:100%; height:100%; display: grid; place-content: center;">
         <p xmlns="http://www.w3.org/1999/xhtml" style="width:100%; height:100%; margin: 0; color: ${this.fontColor}; text-align: center; align-items: center; font-style:italic; font-size:${this.fontSize}; font-family:sans-serif;">${this.text}</p>
         </div>
         </foreignObject>`;
@@ -88,7 +98,7 @@ class RoundedSquare {
     if (this.href !== "") {
       return `<g>${this.anchorSvg()}</g>`;
     }
-    return `<g>${this.rectSvg()}${this.connectSvg()}</g>`;
+    return `<g>${this.rectSvg()}${this.foreignObjectSvg()}${this.connectSvg()}</g>`;
   }
 }
 
@@ -142,6 +152,21 @@ class Connect {
   }
 }
 
+interface RoundedSquareGridOptions {
+  x?: number;
+  y?: number;
+  width: number;
+  height: number;
+  radius?: number;
+  primaryClr?: string;
+  secondaryClr?: string;
+  cols?: number;
+  rows?: number;
+  container: string;
+  svgWidth?: string;
+  svgHeight?: string;
+}
+
 export class RoundedSquareGrid {
   private readonly grid: RoundedSquare[][];
   private readonly x: number;
@@ -158,6 +183,9 @@ export class RoundedSquareGrid {
 
   private isSingleContainer = true;
   private container: HTMLElement | NodeListOf<HTMLElement> | null;
+  svgHeight: string;
+  svgWidth: string;
+  style: any;
 
   constructor({
     x,
@@ -170,18 +198,9 @@ export class RoundedSquareGrid {
     cols,
     rows,
     container,
-  }: {
-    x?: number;
-    y?: number;
-    width: number;
-    height: number;
-    radius?: number;
-    primaryClr?: string;
-    secondaryClr?: string;
-    cols?: number;
-    rows?: number;
-    container?: string;
-  }) {
+    svgHeight,
+    svgWidth,
+  }: RoundedSquareGridOptions) {
     this.x = x || 0;
     this.y = y || 0;
     this.squareWidth = width;
@@ -194,6 +213,9 @@ export class RoundedSquareGrid {
     this.grid = [];
     this.containerSelector = container || "body";
     this.container = null;
+    this.svgHeight = svgHeight || "100%";
+    this.svgWidth = svgWidth || "100%";
+    this.style = styles();
     this.init();
   }
 
@@ -244,6 +266,7 @@ export class RoundedSquareGrid {
     for (let i = 0; i < container.children.length; i++) {
       const child = container.children[i];
       const href = child.getAttribute("href") || "";
+      // get all attributes
       const text = child.textContent || "";
       this.containerContent.push({ href, text });
     }
@@ -255,7 +278,6 @@ export class RoundedSquareGrid {
     }
     return { href: "", text: "" };
   }
-
   private toSvgPath(container: HTMLElement): string {
     let currentX = this.x;
     let currentY = this.y;
@@ -283,7 +305,6 @@ export class RoundedSquareGrid {
       currentX = this.x;
       currentY += this.squareHeight;
     }
-    console.log(this.grid);
     return this.generateGroup();
   }
   private generateSquarePath(
@@ -399,15 +420,13 @@ export class RoundedSquareGrid {
         }`
       );
       (this.container as HTMLElement)?.appendChild(el);
-      return;
     }
   }
   public render(): void {
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-    svg.setAttribute("width", "100%");
-    svg.setAttribute("height", "100%");
-
+    svg.setAttribute("width", this.svgWidth);
+    svg.setAttribute("height", this.svgHeight);
     this.appendToContainer(svg);
   }
 }
