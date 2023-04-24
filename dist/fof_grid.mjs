@@ -79,7 +79,7 @@ class c {
 `;
   }
   toSvgPathLeft() {
-    return this.path = `M${this.x1} ${this.y1} l${this.radius} ${this.radius} l ${-this.radius} ${this.radius} l ${-this.radius} ${-this.radius} z`, `<path d="${this.path}" fill="${this.fillColor}" stroke=nonew"/>
+    return this.path = `M${this.x1} ${this.y1} l${this.radius} ${this.radius} l ${-this.radius} ${this.radius} l ${-this.radius} ${-this.radius} z`, `<path d="${this.path}" fill="${this.fillColor}" stroke=none"/>
 `;
   }
   toSvgPathBottomLeft() {
@@ -123,7 +123,7 @@ class C {
     svgHeight: u,
     svgWidth: d
   }) {
-    this.x = t || 0, this.y = i || 0, this.squareWidth = s, this.squareHeight = e, this.radius = h || 0.5, this.color1 = r || "#ffffff", this.color2 = n || "#000", this.columns = this.makeOdd(l) || 3, this.rows = a || 1, this.grid = [], this.containerSelector = g || "body", this.container = null, this.svgHeight = u || "100%", this.svgWidth = d || "100%", this.style = $(), this.init();
+    this.x = t || 0, this.y = i || 0, this.radius = h || 0.5, this.color1 = r || "#ffffff", this.color2 = n || "#000", this.columns = this.makeOdd(l) || 3, this.rows = a || 1, this.squareWidth = s || 100, this.squareHeight = e || 100, this.grid = [], this.containerSelector = g || "body", this.container = null, this.svgHeight = u || "100%", this.svgWidth = d || "100%", this.style = $(), this.init();
   }
   init() {
     if (this.containerSelector === "body") {

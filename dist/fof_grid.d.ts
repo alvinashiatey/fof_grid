@@ -3,8 +3,8 @@
 export interface RoundedSquareGridOptions {
 	x?: number;
 	y?: number;
-	width: number;
-	height: number;
+	width?: number;
+	height?: number;
 	radius?: number;
 	primaryClr?: string;
 	secondaryClr?: string;
@@ -18,8 +18,8 @@ export declare class RoundedSquareGrid {
 	private readonly grid;
 	private readonly x;
 	private readonly y;
-	private readonly squareWidth;
-	private readonly squareHeight;
+	private squareWidth;
+	private squareHeight;
 	private readonly radius;
 	private readonly color1;
 	private readonly color2;

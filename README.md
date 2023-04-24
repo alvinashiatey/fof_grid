@@ -11,7 +11,7 @@ This is a script to create a grid for the design system of FOF design by Mainwei
   <a href="/a" data-shape>Text Goes Here</a>
   <a href="/b" data-shape>Text Goes Here</a>
   <a href="/c" data-shape>Text Goes Here</a>
-  <a href="/d" data-shape>Text Goes Here</a>
+  <a href="" data-shape>Text Goes Here</a>
 </div>
 ```
 

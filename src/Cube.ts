@@ -136,7 +136,7 @@ class Connect {
   public toSvgPathLeft(): string {
     this.path = `M${this.x1} ${this.y1} l${this.radius} ${this.radius} l ${-this
       .radius} ${this.radius} l ${-this.radius} ${-this.radius} z`;
-    return `<path d="${this.path}" fill="${this.fillColor}" stroke=nonew"/>\n`;
+    return `<path d="${this.path}" fill="${this.fillColor}" stroke=none"/>\n`;
   }
 
   public toSvgPathBottomLeft(): string {
@@ -155,8 +155,8 @@ class Connect {
 interface RoundedSquareGridOptions {
   x?: number;
   y?: number;
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
   radius?: number;
   primaryClr?: string;
   secondaryClr?: string;
@@ -171,8 +171,8 @@ export class RoundedSquareGrid {
   private readonly grid: RoundedSquare[][];
   private readonly x: number;
   private readonly y: number;
-  private readonly squareWidth: number;
-  private readonly squareHeight: number;
+  private squareWidth: number;
+  private squareHeight: number;
   private readonly radius: number;
   private readonly color1: string;
   private readonly color2: string;
@@ -203,13 +203,13 @@ export class RoundedSquareGrid {
   }: RoundedSquareGridOptions) {
     this.x = x || 0;
     this.y = y || 0;
-    this.squareWidth = width;
-    this.squareHeight = height;
     this.radius = radius || 0.5;
     this.color1 = primaryClr || "#ffffff";
     this.color2 = secondaryClr || "#000";
     this.columns = this.makeOdd(cols) || 3;
     this.rows = rows || 1;
+    this.squareWidth = width || 100;
+    this.squareHeight = height || 100;
     this.grid = [];
     this.containerSelector = container || "body";
     this.container = null;
@@ -223,8 +223,11 @@ export class RoundedSquareGrid {
     if (this.containerSelector === "body") {
       this.isSingleContainer = true;
       this.container = document.body;
+
       return;
     }
+
+    //  set the square height if 0 to a proportional value of the height of the container and the number of rows
 
     this.isSingleContainer = this.containerSelector[0] === "#";
     const selector = this.isSingleContainer
