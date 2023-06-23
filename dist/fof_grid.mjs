@@ -98,7 +98,7 @@ class u {
 `;
   }
 }
-class x {
+class S {
   grid;
   x;
   y;
@@ -143,7 +143,8 @@ class x {
     }
     this.isSingleContainer = this.containerSelector.startsWith("#");
     const t = this.isSingleContainer ? this.containerSelector.slice(1) : this.containerSelector, i = this.isSingleContainer ? document.getElementById(t) : document.querySelectorAll(t);
-    !i || (this.isSingleContainer = i.length === 1, i instanceof NodeList ? (this.isSingleContainer = i.length === 1, this.container = this.isSingleContainer ? i[0] : i) : (this.isSingleContainer = !0, this.container = i));
+    !i || (this.isSingleContainer = i.length === 1, i instanceof NodeList ? (this.isSingleContainer = i.length === 1, this.container = this.isSingleContainer ? i[0] : i) : (this.isSingleContainer = !0, this.container = i), console.log(`CustomScript by Alvin Ashiatey.
+Version 0.1.7`));
   }
   makeOdd(t) {
     if (!!t)
@@ -260,5 +261,5 @@ class x {
   }
 }
 export {
-  x as RoundedSquareGrid
+  S as RoundedSquareGrid
 };
