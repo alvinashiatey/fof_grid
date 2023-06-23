@@ -9,6 +9,8 @@ export interface RoundedSquareGridOptions {
 	primaryClr?: string;
 	secondaryClr?: string;
 	cols?: number;
+	minCols?: number;
+	maxCols?: number;
 	rows?: number;
 	container: string;
 	svgWidth?: string;
@@ -32,7 +34,9 @@ export declare class RoundedSquareGrid {
 	svgHeight: string;
 	svgWidth: string;
 	style: any;
-	constructor({ x, y, width, height, radius, primaryClr, secondaryClr, cols, rows, container, svgHeight, svgWidth, }: RoundedSquareGridOptions);
+	minColumns: any;
+	maxColumns: any;
+	constructor({ x, y, width, height, radius, primaryClr, secondaryClr, cols, rows, minCols, maxCols, container, svgHeight, svgWidth, }: RoundedSquareGridOptions);
 	private init;
 	private makeOdd;
 	private setupRowsAndColumns;

@@ -3,15 +3,15 @@ function g(n) {
   if (n.startsWith("#"))
     t = n.slice(1);
   else {
-    const e = document.createElement("div");
-    e.style.color = n, t = window.getComputedStyle(e).color, t = t.slice(4, -1).split(",").map(function(s) {
-      return s = Number(s).toString(16), s.length === 1 ? "0" + s : s;
+    const s = document.createElement("div");
+    s.style.color = n, t = window.getComputedStyle(s).color, t = t.slice(4, -1).split(",").map(function(e) {
+      return e = Number(e).toString(16), e.length === 1 ? "0" + e : e;
     }).join("");
   }
   let i = (parseInt(t, 16) ^ 16777215).toString(16);
   return i = "#" + "0".repeat(6 - i.length) + i, i;
 }
-function $() {
+function p() {
   return `
   div {
     width:100%; 
@@ -20,7 +20,7 @@ function $() {
     place-content: center;
   }`;
 }
-class C {
+class m {
   x;
   y;
   width;
@@ -32,8 +32,8 @@ class C {
   fontColor;
   text;
   href;
-  constructor(t, i, e, s, r, h) {
-    this.x = t, this.y = i, this.width = e, this.height = s, this.radius = r, this.fillColor = h, this.fontSize = "0.15rem", this.fontColor = g(h), this.text = "hello", this.href = "";
+  constructor(t, i, s, e, r, h) {
+    this.x = t, this.y = i, this.width = s, this.height = e, this.radius = r, this.fillColor = h, this.fontSize = "0.15rem", this.fontColor = g(h), this.text = "hello", this.href = "";
   }
   toSvgPath() {
     return this.groupSvg();
@@ -78,8 +78,8 @@ class u {
   by;
   fillColor = "#181818";
   path = "";
-  constructor(t, i, e, s) {
-    this.bx = t.x + t.width, this.by = t.y + t.height - e, this.x1 = t.x, this.y1 = t.y - e, this.x2 = i.x, this.y2 = i.y + i.height - e, this.radius = e, this.fillColor = s;
+  constructor(t, i, s, e) {
+    this.bx = t.x + t.width, this.by = t.y + t.height - s, this.x1 = t.x, this.y1 = t.y - s, this.x2 = i.x, this.y2 = i.y + i.height - s, this.radius = s, this.fillColor = e;
   }
   toSvgPathRight() {
     return this.path = `M${this.x2} ${this.y2} l${this.radius} ${this.radius} l ${-this.radius} ${this.radius} l ${-this.radius} ${-this.radius} z`, `<path d="${this.path}" fill="${this.fillColor}" stroke="none"/>
@@ -98,7 +98,7 @@ class u {
 `;
   }
 }
-class p {
+class x {
   grid;
   x;
   y;
@@ -116,21 +116,25 @@ class p {
   svgHeight;
   svgWidth;
   style;
+  minColumns;
+  maxColumns;
   constructor({
     x: t,
     y: i,
-    width: e,
-    height: s,
+    width: s,
+    height: e,
     radius: r,
     primaryClr: h,
     secondaryClr: o,
     cols: l,
     rows: c,
-    container: a,
-    svgHeight: d,
-    svgWidth: f
+    minCols: a,
+    maxCols: d,
+    container: f,
+    svgHeight: $,
+    svgWidth: C
   }) {
-    this.x = t || 0, this.y = i || 0, this.radius = r || 0.5, this.color1 = h || "#ffffff", this.color2 = o || "#000", this.columns = l || 3, this.rows = c || 1, this.squareWidth = e || 100, this.squareHeight = s || 100, this.grid = [], this.containerSelector = a || "body", this.container = null, this.svgHeight = d || "100%", this.svgWidth = f || "100%", this.style = $(), this.init();
+    this.x = t || 0, this.y = i || 0, this.radius = r || 0.5, this.color1 = h || "#ffffff", this.color2 = o || "#000", this.columns = l || 3, this.rows = c || 1, this.minColumns = a || 2, this.maxColumns = d || 2, this.squareWidth = s || 100, this.squareHeight = e || 100, this.grid = [], this.containerSelector = f || "body", this.container = null, this.svgHeight = $ || "100%", this.svgWidth = C || "100%", this.style = p(), this.init();
   }
   init() {
     if (this.containerSelector === "body") {
@@ -146,14 +150,14 @@ class p {
       return t % 2 === 0 ? t + 1 : t;
   }
   setupRowsAndColumns(t) {
-    const e = t.children.length;
-    this.rows = Math.ceil(e * 2 / this.columns) || 1, this.columns % 2 !== 0 && (this.columns = this.makeOdd(this.columns) || 3), this.setupContainerContent(t);
+    const s = t.children.length;
+    this.rows = Math.ceil(s * 2 / this.columns) || 1, this.columns % 2 !== 0 && (this.columns = this.makeOdd(this.columns) || 3), this.setupContainerContent(t);
   }
   setupContainerContent(t) {
     this.containerContent = [];
     for (let i = 0; i < t.children.length; i++) {
-      const e = t.children[i], s = e.getAttribute("href") || "", r = e.textContent || "";
-      this.containerContent.push({ href: s, text: r });
+      const s = t.children[i], e = s.getAttribute("href") || "", r = s.textContent || "";
+      this.containerContent.push({ href: e, text: r });
     }
     t.innerHTML = "";
   }
@@ -161,12 +165,12 @@ class p {
     return t % 2 !== 0 ? this.containerContent.shift() || { href: "", text: "" } : { href: "", text: "" };
   }
   toSvgPath(t) {
-    let i = this.x, e = this.y, s = this.color1, r = 0;
+    let i = this.x, s = this.y, e = this.color1, r = 0;
     this.setupRowsAndColumns(t);
     for (let h = 0; h < this.rows; h++) {
       this.grid[h] = [];
       for (let o = 0; o < this.columns && !(this.containerContent.length === 0 && r % 2 !== 0); o++) {
-        if (h % 2 === 0 && o === 0 && (s = this.alternateColor(s)), this.grid[h][o] = this.generateSquarePath(i, e), this.columns % 2 === 0 && h % 2 !== 0) {
+        if (h % 2 === 0 && o === 0 && (e = this.alternateColor(e)), this.grid[h][o] = this.generateSquarePath(i, s), this.columns % 2 === 0 && h % 2 !== 0) {
           const { href: l, text: c } = this.getContainerContent(r);
           this.grid[h][o].text = c, this.grid[h][o].href = l;
         } else {
@@ -176,41 +180,41 @@ class p {
           } : { href: "", text: "" }, { href: c, text: a } = l();
           this.grid[h][o].text = a, this.grid[h][o].href = c;
         }
-        i += this.squareWidth, s = this.grid[h][o].text !== "" ? this.color2 : this.color1, this.grid[h][o].setFillColor(s), r++;
+        i += this.squareWidth, e = this.grid[h][o].text !== "" ? this.color2 : this.color1, this.grid[h][o].setFillColor(e), r++;
       }
-      i = this.x, e += this.squareHeight;
+      i = this.x, s += this.squareHeight;
     }
     return this.generateGroup();
   }
-  generateSquarePath(t, i, e = this.color2) {
-    return new C(
+  generateSquarePath(t, i, s = this.color2) {
+    return new m(
       t,
       i,
       this.squareWidth,
       this.squareHeight,
       this.radius,
-      e
+      s
     );
   }
   hasNeighbor(t, i) {
-    let e = !1, s = !1, r = !1, h = !1;
-    return t < this.rows - 1 && i > 0 && (e = !0), t < this.rows - 1 && i < this.columns - 1 && (s = !0), t > 0 && i > 0 && (r = !0), t > 0 && i < this.columns - 1 && (h = !0), { bottomLeft: e, bottomRight: s, topLeft: r, topRight: h };
+    let s = !1, e = !1, r = !1, h = !1;
+    return t < this.rows - 1 && i > 0 && (s = !0), t < this.rows - 1 && i < this.columns - 1 && (e = !0), t > 0 && i > 0 && (r = !0), t > 0 && i < this.columns - 1 && (h = !0), { bottomLeft: s, bottomRight: e, topLeft: r, topRight: h };
   }
   generateConnectors() {
     let t = "", i = 0;
-    for (let e = 0; e < this.rows; e++)
-      for (let s = 0; s < this.columns; s++) {
+    for (let s = 0; s < this.rows; s++)
+      for (let e = 0; e < this.columns; e++) {
         if (i++, i % 2 === 0)
           continue;
-        const r = this.hasNeighbor(e, s);
-        console.log(r), r.bottomLeft && this.grid[e + 1][s - 1] && (t += new u(
-          this.grid[e][s],
-          this.grid[e + 1][s - 1],
+        const r = this.hasNeighbor(s, e);
+        r.bottomLeft && this.grid[s + 1][e - 1] && (t += new u(
+          this.grid[s][e],
+          this.grid[s + 1][e - 1],
           this.radius,
           this.color2
-        ).toSvgPathBottomLeft()), r.bottomRight && this.grid[e + 1][s + 1] && (t += new u(
-          this.grid[e][s],
-          this.grid[e + 1][s + 1],
+        ).toSvgPathBottomLeft()), r.bottomRight && this.grid[s + 1][e + 1] && (t += new u(
+          this.grid[s][e],
+          this.grid[s + 1][e + 1],
           this.radius,
           this.color2
         ).toSvgPathBottomRight());
@@ -230,13 +234,13 @@ class p {
         t[o] || (t[o] = []), t[o].push(this.grid[r][h]);
       }
     let i = "";
-    const e = this.generateConnectors(), s = Object.keys(t);
-    for (const r of s) {
+    const s = this.generateConnectors(), e = Object.keys(t);
+    for (const r of e) {
       i += `<g class="${r}">
 `;
       for (let h = 0; h < t[r].length; h++)
         i += t[r][h]?.toSvgPath();
-      r === e.color && (i += e.connectors), i += `</g>
+      r === s.color && (i += s.connectors), i += `</g>
 `;
     }
     return i;
@@ -256,5 +260,5 @@ class p {
   }
 }
 export {
-  p as RoundedSquareGrid
+  x as RoundedSquareGrid
 };
