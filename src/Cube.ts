@@ -172,6 +172,8 @@ interface RoundedSquareGridOptions {
   primaryClr?: string;
   secondaryClr?: string;
   cols?: number;
+  minCols?: number;
+  maxCols?: number;
   rows?: number;
   container: string;
   svgWidth?: string;
@@ -197,6 +199,8 @@ export class RoundedSquareGrid {
   svgHeight: string;
   svgWidth: string;
   style: any;
+  minColumns: any;
+  maxColumns: any;
 
   constructor({
     x,
@@ -208,6 +212,8 @@ export class RoundedSquareGrid {
     secondaryClr,
     cols,
     rows,
+    minCols,
+    maxCols,
     container,
     svgHeight,
     svgWidth,
@@ -220,6 +226,8 @@ export class RoundedSquareGrid {
     // this.columns = this.makeOdd(cols) || 3;
     this.columns = cols || 3;
     this.rows = rows || 1;
+    this.minColumns = minCols || 2;
+    this.maxColumns = maxCols || 2;
     this.squareWidth = width || 100;
     this.squareHeight = height || 100;
     this.grid = [];
@@ -386,7 +394,6 @@ export class RoundedSquareGrid {
         index++;
         if (index % 2 === 0) continue;
         const pos = this.hasNeighbor(i, j);
-        console.log(pos);
         if (pos.bottomLeft && this.grid[i + 1][j - 1]) {
           connectors += new Connect(
             this.grid[i][j],
