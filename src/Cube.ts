@@ -36,7 +36,7 @@ class RoundedSquare {
   readonly width: number;
   readonly height: number;
   private readonly radius: number;
-  readonly fillColor: string;
+  fillColor: string;
 
   public corners: Connect[] = [];
   public fontSize: string;
@@ -99,6 +99,17 @@ class RoundedSquare {
       return `<g>${this.anchorSvg()}</g>`;
     }
     return `<g>${this.rectSvg()}${this.foreignObjectSvg()}${this.connectSvg()}</g>`;
+  }
+
+  public swapColors(): void {
+    const temp = this.fillColor;
+    this.fillColor = this.fontColor;
+    this.fontColor = temp;
+  }
+
+  public setFillColor(color: string): void {
+    this.fillColor = color;
+    this.fontColor = generateComplement(color);
   }
 }
 
@@ -206,7 +217,8 @@ export class RoundedSquareGrid {
     this.radius = radius || 0.5;
     this.color1 = primaryClr || "#ffffff";
     this.color2 = secondaryClr || "#000";
-    this.columns = this.makeOdd(cols) || 3;
+    // this.columns = this.makeOdd(cols) || 3;
+    this.columns = cols || 3;
     this.rows = rows || 1;
     this.squareWidth = width || 100;
     this.squareHeight = height || 100;
@@ -227,9 +239,7 @@ export class RoundedSquareGrid {
       return;
     }
 
-    //  set the square height if 0 to a proportional value of the height of the container and the number of rows
-
-    this.isSingleContainer = this.containerSelector[0] === "#";
+    this.isSingleContainer = this.containerSelector.startsWith("#");
     const selector = this.isSingleContainer
       ? this.containerSelector.slice(1)
       : this.containerSelector;
@@ -290,20 +300,37 @@ export class RoundedSquareGrid {
     for (let i = 0; i < this.rows; i++) {
       this.grid[i] = [];
       for (let j = 0; j < this.columns; j++) {
-        this.grid[i][j] = this.generateSquarePath(
-          currentX,
-          currentY,
-          currentColor
-        );
-        const { href, text } = this.getContainerContent(index);
-        this.grid[i][j].text = text;
-        this.grid[i][j].href = href;
-        currentX += this.squareWidth;
-        currentColor = this.alternateColor(currentColor);
-        index++;
         if (this.containerContent.length === 0 && index % 2 !== 0) {
           break;
         }
+        if (i % 2 === 0 && j === 0) {
+          currentColor = this.alternateColor(currentColor);
+        }
+        this.grid[i][j] = this.generateSquarePath(currentX, currentY);
+        if (this.columns % 2 === 0 && i % 2 !== 0) {
+          const { href, text } = this.getContainerContent(index);
+          this.grid[i][j].text = text;
+          this.grid[i][j].href = href;
+        } else {
+          const gcc = () => {
+            if (index % 2 === 0) {
+              return (
+                this.containerContent.shift() || {
+                  href: "",
+                  text: "",
+                }
+              );
+            }
+            return { href: "", text: "" };
+          };
+          const { href, text } = gcc();
+          this.grid[i][j].text = text;
+          this.grid[i][j].href = href;
+        }
+        currentX += this.squareWidth;
+        currentColor = this.grid[i][j].text !== "" ? this.color2 : this.color1;
+        this.grid[i][j].setFillColor(currentColor);
+        index++;
       }
       currentX = this.x;
       currentY += this.squareHeight;
@@ -313,7 +340,7 @@ export class RoundedSquareGrid {
   private generateSquarePath(
     currentX: number,
     currentY: number,
-    currentColor: string
+    currentColor: string = this.color2
   ): RoundedSquare {
     return new RoundedSquare(
       currentX,
@@ -357,8 +384,9 @@ export class RoundedSquareGrid {
     for (let i = 0; i < this.rows; i++) {
       for (let j = 0; j < this.columns; j++) {
         index++;
-        if (index % 2 !== 0) continue;
+        if (index % 2 === 0) continue;
         const pos = this.hasNeighbor(i, j);
+        console.log(pos);
         if (pos.bottomLeft && this.grid[i + 1][j - 1]) {
           connectors += new Connect(
             this.grid[i][j],
@@ -397,14 +425,15 @@ export class RoundedSquareGrid {
       }
     }
     let group = "";
-    const reversedKeys = Object.keys(groups).reverse();
+    const connectors = this.generateConnectors();
+    const reversedKeys = Object.keys(groups);
     for (const key of reversedKeys) {
       group += `<g class="${key}">\n`;
       for (let i = 0; i < groups[key].length; i++) {
         group += groups[key][i]?.toSvgPath();
       }
-      if (key === this.generateConnectors().color) {
-        group += this.generateConnectors().connectors;
+      if (key === connectors.color) {
+        group += connectors.connectors;
       }
       group += `</g>\n`;
     }
