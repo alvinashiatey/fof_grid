@@ -134,7 +134,7 @@ class x {
     svgHeight: $,
     svgWidth: C
   }) {
-    this.x = t || 0, this.y = i || 0, this.radius = r || 0.5, this.color1 = h || "#ffffff", this.color2 = o || "#000", this.columns = l || 3, this.rows = c || 1, this.minColumns = a || 2, this.maxColumns = d || 2, this.squareWidth = s || 100, this.squareHeight = e || 100, this.grid = [], this.containerSelector = f || "body", this.container = null, this.svgHeight = $ || "100%", this.svgWidth = C || "100%", this.style = p(), this.init();
+    this.x = t ?? 0, this.y = i ?? 0, this.radius = r ?? 0.5, this.color1 = h ?? "#ffffff", this.color2 = o ?? "#000", this.columns = l ?? 3, this.rows = c ?? 1, this.minColumns = a ?? 2, this.maxColumns = d ?? 2, this.squareWidth = s ?? 100, this.squareHeight = e ?? 100, this.grid = [], this.containerSelector = f ?? "body", this.container = null, this.svgHeight = $ ?? "100%", this.svgWidth = C ?? "100%", this.style = p(), this.init();
   }
   init() {
     if (this.containerSelector === "body") {

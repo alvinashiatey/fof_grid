@@ -267,6 +267,8 @@ export class RoundedSquareGrid {
       this.isSingleContainer = true;
       this.container = el as HTMLElement;
     }
+
+    console.log("CustomScript by Alvin Ashiatey.\nVersion 0.1.7");
   }
   private makeOdd(num: number | undefined): number | undefined {
     if (!num) return undefined;
