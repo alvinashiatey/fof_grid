@@ -218,23 +218,22 @@ export class RoundedSquareGrid {
     svgHeight,
     svgWidth,
   }: RoundedSquareGridOptions) {
-    this.x = x || 0;
-    this.y = y || 0;
-    this.radius = radius || 0.5;
-    this.color1 = primaryClr || "#ffffff";
-    this.color2 = secondaryClr || "#000";
-    // this.columns = this.makeOdd(cols) || 3;
-    this.columns = cols || 3;
-    this.rows = rows || 1;
-    this.minColumns = minCols || 2;
-    this.maxColumns = maxCols || 2;
-    this.squareWidth = width || 100;
-    this.squareHeight = height || 100;
+    this.x = x ?? 0;
+    this.y = y ?? 0;
+    this.radius = radius ?? 0.5;
+    this.color1 = primaryClr ?? "#ffffff";
+    this.color2 = secondaryClr ?? "#000";
+    this.columns = cols ?? 3;
+    this.rows = rows ?? 1;
+    this.minColumns = minCols ?? 2;
+    this.maxColumns = maxCols ?? 2;
+    this.squareWidth = width ?? 100;
+    this.squareHeight = height ?? 100;
     this.grid = [];
-    this.containerSelector = container || "body";
+    this.containerSelector = container ?? "body";
     this.container = null;
-    this.svgHeight = svgHeight || "100%";
-    this.svgWidth = svgWidth || "100%";
+    this.svgHeight = svgHeight ?? "100%";
+    this.svgWidth = svgWidth ?? "100%";
     this.style = styles();
     this.init();
   }
