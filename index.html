@@ -14,13 +14,20 @@
     </div>
     <script type="module">
       import { RoundedSquareGrid } from "./src/index.ts";
-      let grid = new RoundedSquareGrid({
-        width: 14,
-        height: 20,
-        cols: 3,
-        container: ".app",
-      });
+      let opt = { width: 14, height: 20, cols: 3, container: ".app" };
+      if (window.innerWidth <= 768) {
+        opt.cols = 2;
+      }
+      let grid = new RoundedSquareGrid(opt);
       grid.render();
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth <= 768) {
+          grid.update({ columns: 2 });
+        } else {
+          grid.update({ columns: 3 });
+        }
+      });
     </script>
   </body>
 </html>

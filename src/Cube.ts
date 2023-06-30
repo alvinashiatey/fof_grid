@@ -181,7 +181,7 @@ interface RoundedSquareGridOptions {
 }
 
 export class RoundedSquareGrid {
-  private readonly grid: RoundedSquare[][];
+  private grid: RoundedSquare[][];
   private readonly x: number;
   private readonly y: number;
   private squareWidth: number;
@@ -193,6 +193,7 @@ export class RoundedSquareGrid {
   private rows: number;
   private readonly containerSelector: string;
   private containerContent: { href: string; text: string }[] = [];
+  private isUpdate = false;
 
   private isSingleContainer = true;
   private container: HTMLElement | NodeListOf<HTMLElement> | null;
@@ -275,28 +276,37 @@ export class RoundedSquareGrid {
     return num % 2 === 0 ? num + 1 : num;
   }
   private setupRowsAndColumns(container: HTMLElement) {
-    const children = container.children;
-    const numChildren = children.length;
-    this.rows = Math.ceil((numChildren * 2) / this.columns) || 1;
-    if (this.columns % 2 !== 0) {
-      this.columns = this.makeOdd(this.columns) || 3;
+    if (!this.isUpdate) {
+      const children = container.children;
+      const numChildren = children.length;
+      if (this.columns % 2 !== 0) {
+        this.columns = this.makeOdd(this.columns) || 3;
+      }
+      this.rows = Math.ceil((numChildren * 2) / this.columns) || 1;
+      this.setupContainerContent(container);
+    } else {
+      if (this.columns % 2 !== 0) {
+        this.columns = this.makeOdd(this.columns) || 3;
+      }
+      this.rows = Math.ceil((this.containerContent.length * 2) / this.columns);
     }
-    this.setupContainerContent(container);
   }
   private setupContainerContent(container: HTMLElement) {
     this.containerContent = [];
     for (let i = 0; i < container.children.length; i++) {
       const child = container.children[i];
       const href = child.getAttribute("href") || "";
-      // get all attributes
       const text = child.textContent || "";
       this.containerContent.push({ href, text });
     }
     container.innerHTML = "";
   }
-  private getContainerContent(index: number): { href: string; text: string } {
+  private getContainerContent(
+    index: number,
+    arr: { href: string; text: string }[]
+  ): { href: string; text: string } {
     if (index % 2 !== 0) {
-      return this.containerContent.shift() || { href: "", text: "" };
+      return arr.shift() || { href: "", text: "" };
     }
     return { href: "", text: "" };
   }
@@ -306,25 +316,29 @@ export class RoundedSquareGrid {
     let currentColor = this.color1;
     let index = 0;
     this.setupRowsAndColumns(container);
+    const containerContent = [...this.containerContent];
     for (let i = 0; i < this.rows; i++) {
       this.grid[i] = [];
       for (let j = 0; j < this.columns; j++) {
-        if (this.containerContent.length === 0 && index % 2 !== 0) {
-          break;
-        }
+        // if (containerContent.length === 0 && index % 2 !== 0) {
+        //   break;
+        // }
         if (i % 2 === 0 && j === 0) {
           currentColor = this.alternateColor(currentColor);
         }
         this.grid[i][j] = this.generateSquarePath(currentX, currentY);
         if (this.columns % 2 === 0 && i % 2 !== 0) {
-          const { href, text } = this.getContainerContent(index);
+          const { href, text } = this.getContainerContent(
+            index,
+            containerContent
+          );
           this.grid[i][j].text = text;
           this.grid[i][j].href = href;
         } else {
           const gcc = () => {
             if (index % 2 === 0) {
               return (
-                this.containerContent.shift() || {
+                containerContent.shift() || {
                   href: "",
                   text: "",
                 }
@@ -389,27 +403,28 @@ export class RoundedSquareGrid {
   }
   public generateConnectors(): { connectors: string; color: string } {
     let connectors = "";
-    let index = 0;
     for (let i = 0; i < this.rows; i++) {
       for (let j = 0; j < this.columns; j++) {
-        index++;
-        if (index % 2 === 0) continue;
         const pos = this.hasNeighbor(i, j);
         if (pos.bottomLeft && this.grid[i + 1][j - 1]) {
-          connectors += new Connect(
-            this.grid[i][j],
-            this.grid[i + 1][j - 1],
-            this.radius,
-            this.color2
-          ).toSvgPathBottomLeft();
+          if (this.grid[i + 1][j - 1].text !== "") {
+            connectors += new Connect(
+              this.grid[i][j],
+              this.grid[i + 1][j - 1],
+              this.radius,
+              this.color2
+            ).toSvgPathBottomLeft();
+          }
         }
         if (pos.bottomRight && this.grid[i + 1][j + 1]) {
-          connectors += new Connect(
-            this.grid[i][j],
-            this.grid[i + 1][j + 1],
-            this.radius,
-            this.color2
-          ).toSvgPathBottomRight();
+          if (this.grid[i + 1][j + 1].text !== "") {
+            connectors += new Connect(
+              this.grid[i][j],
+              this.grid[i + 1][j + 1],
+              this.radius,
+              this.color2
+            ).toSvgPathBottomRight();
+          }
         }
       }
     }
@@ -459,6 +474,7 @@ export class RoundedSquareGrid {
           this.y + this.squareHeight * this.rows
         }`
       );
+
       (this.container as HTMLElement)?.appendChild(el);
     }
   }
@@ -468,5 +484,14 @@ export class RoundedSquareGrid {
     svg.setAttribute("width", this.svgWidth);
     svg.setAttribute("height", this.svgHeight);
     this.appendToContainer(svg);
+  }
+  public update({ columns, rows }: { columns?: number; rows?: number }): void {
+    (this.container as HTMLElement).innerHTML = "";
+    this.isUpdate = true;
+    this.columns = columns ?? this.columns;
+    this.rows = rows ?? this.rows;
+    this.grid = [];
+    this.render();
+    this.isUpdate = false;
   }
 }
