@@ -1,17 +1,17 @@
-function g(n) {
+function u(l) {
   let t;
-  if (n.startsWith("#"))
-    t = n.slice(1);
+  if (l.startsWith("#"))
+    t = l.slice(1);
   else {
     const s = document.createElement("div");
-    s.style.color = n, t = window.getComputedStyle(s).color, t = t.slice(4, -1).split(",").map(function(e) {
+    s.style.color = l, t = window.getComputedStyle(s).color, t = t.slice(4, -1).split(",").map(function(e) {
       return e = Number(e).toString(16), e.length === 1 ? "0" + e : e;
     }).join("");
   }
   let i = (parseInt(t, 16) ^ 16777215).toString(16);
   return i = "#" + "0".repeat(6 - i.length) + i, i;
 }
-function p() {
+function m() {
   return `
   div {
     width:100%; 
@@ -20,7 +20,7 @@ function p() {
     place-content: center;
   }`;
 }
-class m {
+class p {
   x;
   y;
   width;
@@ -32,8 +32,8 @@ class m {
   fontColor;
   text;
   href;
-  constructor(t, i, s, e, r, h) {
-    this.x = t, this.y = i, this.width = s, this.height = e, this.radius = r, this.fillColor = h, this.fontSize = "0.15rem", this.fontColor = g(h), this.text = "hello", this.href = "";
+  constructor(t, i, s, e, h, r) {
+    this.x = t, this.y = i, this.width = s, this.height = e, this.radius = h, this.fillColor = r, this.fontSize = "0.15rem", this.fontColor = u(r), this.text = "hello", this.href = "";
   }
   toSvgPath() {
     return this.groupSvg();
@@ -65,10 +65,10 @@ class m {
     this.fillColor = this.fontColor, this.fontColor = t;
   }
   setFillColor(t) {
-    this.fillColor = t, this.fontColor = g(t);
+    this.fillColor = t, this.fontColor = u(t);
   }
 }
-class u {
+class d {
   x1;
   y1;
   x2;
@@ -98,7 +98,7 @@ class u {
 `;
   }
 }
-class S {
+class x {
   grid;
   x;
   y;
@@ -111,6 +111,7 @@ class S {
   rows;
   containerSelector;
   containerContent = [];
+  isUpdate = !1;
   isSingleContainer = !0;
   container;
   svgHeight;
@@ -123,18 +124,18 @@ class S {
     y: i,
     width: s,
     height: e,
-    radius: r,
-    primaryClr: h,
+    radius: h,
+    primaryClr: r,
     secondaryClr: o,
-    cols: l,
+    cols: n,
     rows: c,
     minCols: a,
-    maxCols: d,
+    maxCols: g,
     container: f,
     svgHeight: $,
     svgWidth: C
   }) {
-    this.x = t ?? 0, this.y = i ?? 0, this.radius = r ?? 0.5, this.color1 = h ?? "#ffffff", this.color2 = o ?? "#000", this.columns = l ?? 3, this.rows = c ?? 1, this.minColumns = a ?? 2, this.maxColumns = d ?? 2, this.squareWidth = s ?? 100, this.squareHeight = e ?? 100, this.grid = [], this.containerSelector = f ?? "body", this.container = null, this.svgHeight = $ ?? "100%", this.svgWidth = C ?? "100%", this.style = p(), this.init();
+    this.x = t ?? 0, this.y = i ?? 0, this.radius = h ?? 0.5, this.color1 = r ?? "#ffffff", this.color2 = o ?? "#000", this.columns = n ?? 3, this.rows = c ?? 1, this.minColumns = a ?? 2, this.maxColumns = g ?? 2, this.squareWidth = s ?? 100, this.squareHeight = e ?? 100, this.grid = [], this.containerSelector = f ?? "body", this.container = null, this.svgHeight = $ ?? "100%", this.svgWidth = C ?? "100%", this.style = m(), this.init();
   }
   init() {
     if (this.containerSelector === "body") {
@@ -151,44 +152,52 @@ Version 0.1.7`));
       return t % 2 === 0 ? t + 1 : t;
   }
   setupRowsAndColumns(t) {
-    const s = t.children.length;
-    this.rows = Math.ceil(s * 2 / this.columns) || 1, this.columns % 2 !== 0 && (this.columns = this.makeOdd(this.columns) || 3), this.setupContainerContent(t);
+    if (this.isUpdate)
+      this.columns % 2 !== 0 && (this.columns = this.makeOdd(this.columns) || 3), this.rows = Math.ceil(this.containerContent.length * 2 / this.columns);
+    else {
+      const s = t.children.length;
+      this.columns % 2 !== 0 && (this.columns = this.makeOdd(this.columns) || 3), this.rows = Math.ceil(s * 2 / this.columns) || 1, this.setupContainerContent(t);
+    }
   }
   setupContainerContent(t) {
     this.containerContent = [];
     for (let i = 0; i < t.children.length; i++) {
-      const s = t.children[i], e = s.getAttribute("href") || "", r = s.textContent || "";
-      this.containerContent.push({ href: e, text: r });
+      const s = t.children[i], e = s.getAttribute("href") || "", h = s.textContent || "";
+      this.containerContent.push({ href: e, text: h });
     }
     t.innerHTML = "";
   }
-  getContainerContent(t) {
-    return t % 2 !== 0 ? this.containerContent.shift() || { href: "", text: "" } : { href: "", text: "" };
+  getContainerContent(t, i) {
+    return t % 2 !== 0 ? i.shift() || { href: "", text: "" } : { href: "", text: "" };
   }
   toSvgPath(t) {
-    let i = this.x, s = this.y, e = this.color1, r = 0;
+    let i = this.x, s = this.y, e = this.color1, h = 0;
     this.setupRowsAndColumns(t);
-    for (let h = 0; h < this.rows; h++) {
-      this.grid[h] = [];
-      for (let o = 0; o < this.columns && !(this.containerContent.length === 0 && r % 2 !== 0); o++) {
-        if (h % 2 === 0 && o === 0 && (e = this.alternateColor(e)), this.grid[h][o] = this.generateSquarePath(i, s), this.columns % 2 === 0 && h % 2 !== 0) {
-          const { href: l, text: c } = this.getContainerContent(r);
-          this.grid[h][o].text = c, this.grid[h][o].href = l;
+    const r = [...this.containerContent];
+    for (let o = 0; o < this.rows; o++) {
+      this.grid[o] = [];
+      for (let n = 0; n < this.columns; n++) {
+        if (o % 2 === 0 && n === 0 && (e = this.alternateColor(e)), this.grid[o][n] = this.generateSquarePath(i, s), this.columns % 2 === 0 && o % 2 !== 0) {
+          const { href: c, text: a } = this.getContainerContent(
+            h,
+            r
+          );
+          this.grid[o][n].text = a, this.grid[o][n].href = c;
         } else {
-          const l = () => r % 2 === 0 ? this.containerContent.shift() || {
+          const c = () => h % 2 === 0 ? r.shift() || {
             href: "",
             text: ""
-          } : { href: "", text: "" }, { href: c, text: a } = l();
-          this.grid[h][o].text = a, this.grid[h][o].href = c;
+          } : { href: "", text: "" }, { href: a, text: g } = c();
+          this.grid[o][n].text = g, this.grid[o][n].href = a;
         }
-        i += this.squareWidth, e = this.grid[h][o].text !== "" ? this.color2 : this.color1, this.grid[h][o].setFillColor(e), r++;
+        i += this.squareWidth, e = this.grid[o][n].text !== "" ? this.color2 : this.color1, this.grid[o][n].setFillColor(e), h++;
       }
       i = this.x, s += this.squareHeight;
     }
     return this.generateGroup();
   }
   generateSquarePath(t, i, s = this.color2) {
-    return new m(
+    return new p(
       t,
       i,
       this.squareWidth,
@@ -198,24 +207,22 @@ Version 0.1.7`));
     );
   }
   hasNeighbor(t, i) {
-    let s = !1, e = !1, r = !1, h = !1;
-    return t < this.rows - 1 && i > 0 && (s = !0), t < this.rows - 1 && i < this.columns - 1 && (e = !0), t > 0 && i > 0 && (r = !0), t > 0 && i < this.columns - 1 && (h = !0), { bottomLeft: s, bottomRight: e, topLeft: r, topRight: h };
+    let s = !1, e = !1, h = !1, r = !1;
+    return t < this.rows - 1 && i > 0 && (s = !0), t < this.rows - 1 && i < this.columns - 1 && (e = !0), t > 0 && i > 0 && (h = !0), t > 0 && i < this.columns - 1 && (r = !0), { bottomLeft: s, bottomRight: e, topLeft: h, topRight: r };
   }
   generateConnectors() {
-    let t = "", i = 0;
-    for (let s = 0; s < this.rows; s++)
-      for (let e = 0; e < this.columns; e++) {
-        if (i++, i % 2 === 0)
-          continue;
-        const r = this.hasNeighbor(s, e);
-        r.bottomLeft && this.grid[s + 1][e - 1] && (t += new u(
-          this.grid[s][e],
-          this.grid[s + 1][e - 1],
+    let t = "";
+    for (let i = 0; i < this.rows; i++)
+      for (let s = 0; s < this.columns; s++) {
+        const e = this.hasNeighbor(i, s);
+        e.bottomLeft && this.grid[i + 1][s - 1] && this.grid[i + 1][s - 1].text !== "" && (t += new d(
+          this.grid[i][s],
+          this.grid[i + 1][s - 1],
           this.radius,
           this.color2
-        ).toSvgPathBottomLeft()), r.bottomRight && this.grid[s + 1][e + 1] && (t += new u(
-          this.grid[s][e],
-          this.grid[s + 1][e + 1],
+        ).toSvgPathBottomLeft()), e.bottomRight && this.grid[i + 1][s + 1] && this.grid[i + 1][s + 1].text !== "" && (t += new d(
+          this.grid[i][s],
+          this.grid[i + 1][s + 1],
           this.radius,
           this.color2
         ).toSvgPathBottomRight());
@@ -227,21 +234,21 @@ Version 0.1.7`));
   }
   generateGroup() {
     const t = {};
-    for (let r = 0; r < this.rows; r++)
-      for (let h = 0; h < this.columns; h++) {
-        if (!this.grid[r][h])
+    for (let h = 0; h < this.rows; h++)
+      for (let r = 0; r < this.columns; r++) {
+        if (!this.grid[h][r])
           continue;
-        const o = this.grid[r][h]?.fillColor;
-        t[o] || (t[o] = []), t[o].push(this.grid[r][h]);
+        const o = this.grid[h][r]?.fillColor;
+        t[o] || (t[o] = []), t[o].push(this.grid[h][r]);
       }
     let i = "";
     const s = this.generateConnectors(), e = Object.keys(t);
-    for (const r of e) {
-      i += `<g class="${r}">
+    for (const h of e) {
+      i += `<g class="${h}">
 `;
-      for (let h = 0; h < t[r].length; h++)
-        i += t[r][h]?.toSvgPath();
-      r === s.color && (i += s.connectors), i += `</g>
+      for (let r = 0; r < t[h].length; r++)
+        i += t[h][r]?.toSvgPath();
+      h === s.color && (i += s.connectors), i += `</g>
 `;
     }
     return i;
@@ -259,7 +266,10 @@ Version 0.1.7`));
     const t = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     t.setAttribute("xmlns", "http://www.w3.org/2000/svg"), t.setAttribute("width", this.svgWidth), t.setAttribute("height", this.svgHeight), this.appendToContainer(t);
   }
+  update({ columns: t, rows: i }) {
+    this.container.innerHTML = "", this.isUpdate = !0, this.columns = t ?? this.columns, this.rows = i ?? this.rows, this.grid = [], this.render(), this.isUpdate = !1;
+  }
 }
 export {
-  S as RoundedSquareGrid
+  x as RoundedSquareGrid
 };

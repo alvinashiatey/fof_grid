@@ -269,7 +269,7 @@ export class RoundedSquareGrid {
       this.container = el as HTMLElement;
     }
 
-    console.log("CustomScript by Alvin Ashiatey.\nVersion 0.1.7");
+    console.log("CustomScript by Alvin Ashiatey.\nVersion 0.1.8");
   }
   private makeOdd(num: number | undefined): number | undefined {
     if (!num) return undefined;

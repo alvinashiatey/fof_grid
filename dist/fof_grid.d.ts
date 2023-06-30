@@ -17,7 +17,7 @@ export interface RoundedSquareGridOptions {
 	svgHeight?: string;
 }
 export declare class RoundedSquareGrid {
-	private readonly grid;
+	private grid;
 	private readonly x;
 	private readonly y;
 	private squareWidth;
@@ -29,6 +29,7 @@ export declare class RoundedSquareGrid {
 	private rows;
 	private readonly containerSelector;
 	private containerContent;
+	private isUpdate;
 	private isSingleContainer;
 	private container;
 	svgHeight: string;
@@ -53,6 +54,10 @@ export declare class RoundedSquareGrid {
 	private alternateColor;
 	private appendToContainer;
 	render(): void;
+	update({ columns, rows }: {
+		columns?: number;
+		rows?: number;
+	}): void;
 }
 
 export {};
