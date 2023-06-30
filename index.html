@@ -20,7 +20,6 @@
       }
       let grid = new RoundedSquareGrid(opt);
       grid.render();
-
       window.addEventListener("resize", () => {
         if (window.innerWidth <= 768) {
           grid.update({ columns: 2 });
